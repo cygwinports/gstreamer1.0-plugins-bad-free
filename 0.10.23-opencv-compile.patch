@@ -1,0 +1,10 @@
+--- origsrc/gst-plugins-bad-0.10.23/ext/opencv/gstmotioncells.h	2011-12-30 12:24:28.000000000 -0600
++++ src/gst-plugins-bad-0.10.23/ext/opencv/gstmotioncells.h	2012-03-13 21:38:24.134605100 -0500
+@@ -47,6 +47,7 @@
+ 
+ #include <gst/gst.h>
+ #include <cv.h>
++#include <sys/time.h>
+ 
+ G_BEGIN_DECLS
+ /* #defines don't like whitespacey bits */
