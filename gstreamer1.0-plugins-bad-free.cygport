@@ -1,5 +1,5 @@
 NAME="gstreamer1.0-plugins-bad-free"
-VERSION=1.0.1
+VERSION=1.0.2
 RELEASE=1
 CATEGORY="Audio Video"
 SUMMARY="GStreamer 1.0 Bad plugins"
@@ -20,7 +20,7 @@ GST_PLUGINS_DISABLE+=" apexsink cog dirac jasper kate ladpsa lv2 musepack
 	gsettings"
 inherit gst-plugins
 
-md5sum=e133574c42908c66d213c02ea7913ab5
+md5sum=cbcc98c6a3952e973f26359363f758c6
 SRC_URI="http://pkgs.fedoraproject.org/repo/pkgs/${PN/.0/}/${ORIG_PN}-${PV}.tar.xz/${md5sum}/${ORIG_PN}-${PV}.tar.xz"
 SRC_DIR="gst-plugins-bad-${PV}"
 
@@ -59,5 +59,6 @@ DIFF_EXCLUDES+=" *.gschema.xml"
 
 # frei0r plugins use .so suffix
 CPPFLAGS+=' -DGST_EXTRA_MODULE_SUFFIX="\".so\""'
+CYGCONF_ARGS="--disable-gtk-doc"
 
 KEEP_LA_FILES="none"
