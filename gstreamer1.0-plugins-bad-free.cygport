@@ -1,5 +1,5 @@
 NAME="gstreamer1.0-plugins-bad-free"
-VERSION=1.0.5
+VERSION=1.0.9
 RELEASE=1
 CATEGORY="Audio Video"
 SUMMARY="GStreamer 1.0 Bad plugins"
@@ -20,13 +20,16 @@ GST_PLUGINS_DISABLE+=" apexsink cog dirac jasper kate ladpsa lv2 musepack
 	gsettings direct3d9 directdraw"
 inherit gst-plugins
 
-md5sum=43c600d406cab67a767d562d1e145869
-SRC_URI="http://pkgs.fedoraproject.org/repo/pkgs/${PN/.0/}/${ORIG_PN}-${PV}.tar.xz/${md5sum}/${ORIG_PN}-${PV}.tar.xz"
-SRC_DIR="gst-plugins-bad-${PV}"
+md5sum=3be5affb8633fc3440460caaca29c0b7
+SRC_URI="http://pkgs.fedoraproject.org/repo/pkgs/${NAME/.0/}/${ORIG_PN}-${VERSION}.tar.xz/${md5sum}/${ORIG_PN}-${VERSION}.tar.xz"
+SRC_DIR="gst-plugins-bad-${VERSION}"
 
-PATCH_URI="0.10.23-opencv-compile.patch"
+PATCH_URI="
+	0.10.23-opencv-compile.patch
+	1.0.9-cygwin-gwin32.patch
+"
 
-PKG_NAMES="${PN} ${PN%-free}-devel"
+PKG_NAMES="${NAME} ${NAME%-free}-devel"
 
 # frei0r: is in gst/ (as <frei0r.h> is included in sources so) it has no
 #         external build deps, but it should really in ext/ due to runtime deps
@@ -36,7 +39,7 @@ do
 	# sys/ plugins with no additional deps
 	case ${ext} in direct3d|directsound) continue ;; esac
 
-	PKG_NAMES+=" ${PN%-bad-free}-${ext}"
+	PKG_NAMES+=" ${NAME%-bad-free}-${ext}"
 	declare gstreamer1_0_plugins_${ext}_SUMMARY="GStreamer 1.0 ${ext} plugin"
 	case ${ext} in
 		musicbrainz)
