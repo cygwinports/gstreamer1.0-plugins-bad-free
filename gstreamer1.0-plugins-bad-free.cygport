@@ -1,5 +1,5 @@
 NAME="gstreamer1.0-plugins-bad-free"
-VERSION=1.0.9
+VERSION=1.0.10
 RELEASE=1
 CATEGORY="Audio Video"
 SUMMARY="GStreamer 1.0 Bad plugins"
@@ -20,7 +20,7 @@ GST_PLUGINS_DISABLE+=" apexsink cog dirac jasper kate ladpsa lv2 musepack
 	gsettings direct3d9 directdraw"
 inherit gst-plugins
 
-md5sum=3be5affb8633fc3440460caaca29c0b7
+md5sum=ea932c94ba648be1aa4e061cd9bbb144
 SRC_URI="http://pkgs.fedoraproject.org/repo/pkgs/${NAME/.0/}/${ORIG_PN}-${VERSION}.tar.xz/${md5sum}/${ORIG_PN}-${VERSION}.tar.xz"
 SRC_DIR="gst-plugins-bad-${VERSION}"
 
@@ -29,7 +29,7 @@ PATCH_URI="
 	1.0.9-cygwin-gwin32.patch
 "
 
-PKG_NAMES="${NAME} ${NAME%-free}-devel"
+PKG_NAMES="${NAME} ${NAME%-free}-devel ${NAME%-free}-doc"
 
 # frei0r: is in gst/ (as <frei0r.h> is included in sources so) it has no
 #         external build deps, but it should really in ext/ due to runtime deps
@@ -57,14 +57,15 @@ unset ext
 gstreamer1_0_plugins_frei0r_REQUIRES="frei0r-plugins"
 gstreamer1_0_plugins_gsettings_REQUIRES="dconf-service"
 gstreamer1_0_plugins_gsettings_CONTENTS+=" usr/share/glib-2.0/ etc/postinstall/"
-gstreamer1_0_plugins_bad_free_CONTENTS+=" --exclude=glib-2.0 usr/bin/ usr/lib/gstreamer-1.0/ usr/share/"
+gstreamer1_0_plugins_bad_free_CONTENTS+=" --exclude=glib-2.0 --exclude=gtk-doc usr/bin/ usr/lib/gstreamer-1.0/ usr/share/"
 gstreamer1_0_plugins_bad_devel_SUMMARY="${SUMMARY} (library development)"
 gstreamer1_0_plugins_bad_devel_CONTENTS=" usr/include/ usr/lib/lib* usr/lib/pkgconfig/"
+gstreamer1_0_plugins_bad_doc_CATEGORY="Doc"
+gstreamer1_0_plugins_bad_doc_CONTENTS="usr/share/gtk-doc/"
 
 DIFF_EXCLUDES+=" *.gschema.xml"
 
 # frei0r plugins use .so suffix
 CPPFLAGS+=' -DGST_EXTRA_MODULE_SUFFIX="\".so\""'
-CYGCONF_ARGS="--disable-gtk-doc"
 
 KEEP_LA_FILES="none"
