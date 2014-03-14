@@ -1,5 +1,15 @@
+GST_PLUGINS_ENABLE="assrender bz2 chromaprint curl resindvd fluidsynth gsm hls
+	kate ladspa modplug neon ofa openal opencv openjpeg opus rsvg soundtouch
+	schro srtp webp wildmidi zbar direct3d directsound"
+GST_PLUGINS_DISABLE="apple_media avc direct3d9
+	directshow osx_video quicktime uvch264 vcd cdaudio dc1394 decklink
+	directfb wayland dts faac faad fbdev libmms linsys mimic mpeg2enc
+	mpg123 mplex mythtv pvr teletextdec spc gme swfdec xvid dvb
+	wininet acm vdpau rtmp spandsp sndio voamrwbenc voaacenc winscreencap"
+inherit gst-plugins
+
 NAME="gstreamer1.0-plugins-bad-free"
-VERSION=1.0.10
+VERSION=1.2.3
 RELEASE=1
 CATEGORY="Audio Video"
 SUMMARY="GStreamer 1.0 Bad plugins"
@@ -7,26 +17,12 @@ DESCRIPTION="GStreamer Bad Plug-ins is a set of plug-ins that aren't up to par
 compared to the rest. They might be close to being good quality, but they're
 missing something - be it a good code review, some documentation, a set of
 tests, a real live maintainer, or some actual wide use."
-GST_PLUGINS_ENABLE="assrender bz2 celt chromaprint curl resindvd gsm modplug
-	opencv opus soundtouch schro zbar direct3d directsound"
-GST_PLUGINS_DISABLE="apple_media avc
-	directshow osx_video quicktime uvch264 vcd cdaudio dc1394 decklink
-	directfb wayland dts faac faad fbdev libmms linsys mimic mpeg2enc
-	mpg123 mplex mythtv pvr teletextdec spc gme swfdec xvid dvb
-	wininet acm vdpau rtmp spandsp sndio voamrwbenc voaacenc winscreencap"
-# deps available, but plugins not yet ported to 1.0
-GST_PLUGINS_DISABLE+=" apexsink cog dirac jasper kate ladpsa lv2 musepack
-	musicbrainz nas neon ofa openal rsvg timidity wildmidi sdl sndfile
-	gsettings direct3d9 directdraw"
-inherit gst-plugins
-
-md5sum=ea932c94ba648be1aa4e061cd9bbb144
+md5sum=eb1c5f0d8a904dd8327a1da4a9cae6ce
 SRC_URI="http://pkgs.fedoraproject.org/repo/pkgs/${NAME/.0/}/${ORIG_PN}-${VERSION}.tar.xz/${md5sum}/${ORIG_PN}-${VERSION}.tar.xz"
 SRC_DIR="gst-plugins-bad-${VERSION}"
 
 PATCH_URI="
 	0.10.23-opencv-compile.patch
-	1.0.9-cygwin-gwin32.patch
 "
 
 PKG_NAMES="${NAME} ${NAME%-free}-devel ${NAME%-free}-doc"
@@ -34,7 +30,7 @@ PKG_NAMES="${NAME} ${NAME%-free}-devel ${NAME%-free}-doc"
 # frei0r: is in gst/ (as <frei0r.h> is included in sources so) it has no
 #         external build deps, but it should really in ext/ due to runtime deps
 # rfbsrc: included librfb depends on libX11
-for ext in ${GST_PLUGINS_ENABLE} frei0r # rfbsrc
+for ext in ${GST_PLUGINS_ENABLE} frei0r rfbsrc
 do
 	# sys/ plugins with no additional deps
 	case ${ext} in direct3d|directsound) continue ;; esac
@@ -42,9 +38,9 @@ do
 	PKG_NAMES+=" ${NAME%-bad-free}-${ext}"
 	declare gstreamer1_0_plugins_${ext}_SUMMARY="GStreamer 1.0 ${ext} plugin"
 	case ${ext} in
-		musicbrainz)
-			declare gstreamer1_0_plugins_${ext}_CONTENTS="${GST_PLUGINDIR#/}/cyggsttrm.dll"
-			gstreamer1_0_plugins_bad_free_CONTENTS+=" --exclude=cyggsttrm.dll"
+		hls)
+			declare gstreamer1_0_plugins_${ext}_CONTENTS="${GST_PLUGINDIR#/}/cyggstfragmented.dll"
+			gstreamer1_0_plugins_bad_free_CONTENTS+=" --exclude=cyggstfragmented.dll"
 			;;
 		*)
 			declare gstreamer1_0_plugins_${ext}_CONTENTS="${GST_PLUGINDIR#/}/cyggst${ext}*.dll"
@@ -57,11 +53,13 @@ unset ext
 gstreamer1_0_plugins_frei0r_REQUIRES="frei0r-plugins"
 gstreamer1_0_plugins_gsettings_REQUIRES="dconf-service"
 gstreamer1_0_plugins_gsettings_CONTENTS+=" usr/share/glib-2.0/ etc/postinstall/"
-gstreamer1_0_plugins_bad_free_CONTENTS+=" --exclude=glib-2.0 --exclude=gtk-doc usr/bin/ usr/lib/gstreamer-1.0/ usr/share/"
+gstreamer1_0_plugins_bad_free_CONTENTS+=" --exclude=glib-2.0 --exclude=gtk-doc --exclude=gir-1.0
+	usr/bin/ usr/lib/girepository-1.0/ usr/lib/gstreamer-1.0/ usr/share/"
 gstreamer1_0_plugins_bad_devel_SUMMARY="${SUMMARY} (library development)"
-gstreamer1_0_plugins_bad_devel_CONTENTS=" usr/include/ usr/lib/lib* usr/lib/pkgconfig/"
+gstreamer1_0_plugins_bad_devel_CONTENTS=" usr/include/ usr/lib/lib* usr/lib/pkgconfig/ usr/share/gir-1.0/"
 gstreamer1_0_plugins_bad_doc_CATEGORY="Doc"
 gstreamer1_0_plugins_bad_doc_CONTENTS="usr/share/gtk-doc/"
+gstreamer1_0_plugins_opus_OBSOLETES="gstreamer1.0-plugins-celt"
 
 DIFF_EXCLUDES+=" *.gschema.xml"
 
