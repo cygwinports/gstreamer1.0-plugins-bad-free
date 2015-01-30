@@ -1,15 +1,16 @@
 GST_PLUGINS_ENABLE="assrender bz2 chromaprint curl resindvd fluidsynth gsm hls
-	kate ladspa modplug neon ofa openal opencv openjpeg opus rsvg soundtouch
-	schro srtp webp wildmidi zbar direct3d directsound"
+	kate ladspa modplug neon ofa openal opencv openexr opengl openjpeg opus
+	rsvg sndfile soundtouch schro webp wildmidi zbar direct3d directsound"
 GST_PLUGINS_DISABLE="apple_media avc direct3d9
 	directshow osx_video quicktime uvch264 vcd cdaudio dc1394 decklink
 	directfb wayland dts faac faad fbdev libmms linsys mimic mpeg2enc
 	mpg123 mplex mythtv pvr teletextdec spc gme swfdec xvid dvb
-	wininet acm vdpau rtmp spandsp sndio voamrwbenc voaacenc winscreencap"
+	wininet acm vdpau rtmp spandsp sndio voamrwbenc voaacenc winscreencap
+	wasapi winks srtp"
 inherit gst-plugins
 
 NAME="gstreamer1.0-plugins-bad-free"
-VERSION=1.2.3
+VERSION=1.4.5
 RELEASE=1
 CATEGORY="Audio Video"
 SUMMARY="GStreamer 1.0 Bad plugins"
@@ -17,12 +18,11 @@ DESCRIPTION="GStreamer Bad Plug-ins is a set of plug-ins that aren't up to par
 compared to the rest. They might be close to being good quality, but they're
 missing something - be it a good code review, some documentation, a set of
 tests, a real live maintainer, or some actual wide use."
-md5sum=eb1c5f0d8a904dd8327a1da4a9cae6ce
+md5sum=c21f0b22bd6c6d493efefe558403d1dd
 SRC_URI="http://pkgs.fedoraproject.org/repo/pkgs/${NAME/.0/}/${ORIG_PN}-${VERSION}.tar.xz/${md5sum}/${ORIG_PN}-${VERSION}.tar.xz"
 SRC_DIR="gst-plugins-bad-${VERSION}"
-
 PATCH_URI="
-	0.10.23-opencv-compile.patch
+	1.4.4-opencv-compile.patch
 "
 
 PKG_NAMES="${NAME} ${NAME%-free}-devel ${NAME%-free}-doc"
@@ -54,16 +54,38 @@ gstreamer1_0_plugins_frei0r_REQUIRES="frei0r-plugins"
 gstreamer1_0_plugins_gsettings_REQUIRES="dconf-service"
 gstreamer1_0_plugins_gsettings_CONTENTS+=" usr/share/glib-2.0/ etc/postinstall/"
 gstreamer1_0_plugins_bad_free_CONTENTS+=" --exclude=glib-2.0 --exclude=gtk-doc --exclude=gir-1.0
+	--exclude=cyggstgl-1.0-0.dll
 	usr/bin/ usr/lib/girepository-1.0/ usr/lib/gstreamer-1.0/ usr/share/"
 gstreamer1_0_plugins_bad_devel_SUMMARY="${SUMMARY} (library development)"
-gstreamer1_0_plugins_bad_devel_CONTENTS=" usr/include/ usr/lib/lib* usr/lib/pkgconfig/ usr/share/gir-1.0/"
+gstreamer1_0_plugins_bad_devel_CONTENTS="
+	--exclude=libgstgl-1.0.dll.a --exclude=gstreamer-gl-1.0.pc --exclude=gl
+	usr/include/ usr/lib/lib* usr/lib/pkgconfig/ usr/share/gir-1.0/"
 gstreamer1_0_plugins_bad_doc_CATEGORY="Doc"
 gstreamer1_0_plugins_bad_doc_CONTENTS="usr/share/gtk-doc/"
 gstreamer1_0_plugins_opus_OBSOLETES="gstreamer1.0-plugins-celt"
+
+PKG_NAMES+=" gstreamer1.0-plugins-opengl-devel"
+gstreamer1_0_plugins_opengl_CONTENTS+=" usr/bin/cyggstgl-1.0-0.dll"
+gstreamer1_0_plugins_opengl_devel_CONTENTS="
+	usr/include/gstreamer-1.0/gst/gl/
+	usr/lib/libgstgl-1.0.dll.a
+	usr/lib/pkgconfig/gstreamer-gl-1.0.pc
+"
 
 DIFF_EXCLUDES+=" *.gschema.xml"
 
 # frei0r plugins use .so suffix
 CPPFLAGS+=' -DGST_EXTRA_MODULE_SUFFIX="\".so\""'
+
+src_compile() {
+        cd ${S}
+        gst_plugins_autoreconf
+
+        cd ${B}
+	PATH="${B}/gst-libs/gst/base/.libs:${B}/gst-libs/gst/basecamerabinsrc/.libs:${B}/gst-libs/gst/codecparsers/.libs:${B}/gst-libs/gst/gl/.libs:${B}/gst-libs/gst/insertbin/.libs:${B}/gst-libs/gst/interfaces/.libs:${B}/gst-libs/gst/mpegts/.libs:${B}/gst-libs/gst/uridownloader/.libs:${B}/gst-libs/gst/video/.libs:$PATH"
+        gst_plugins_compile \
+		--with-opengl-module-name=cygGL-1.dll \
+		--disable-cocoa --enable-glx --disable-wgl
+}
 
 KEEP_LA_FILES="none"
