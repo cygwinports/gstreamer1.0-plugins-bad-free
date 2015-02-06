@@ -50,6 +50,7 @@ do
 done
 unset ext
 
+gstreamer1_0_plugins_fluidsynth_REQUIRES="soundfont-fluid-gs"
 gstreamer1_0_plugins_frei0r_REQUIRES="frei0r-plugins"
 gstreamer1_0_plugins_gsettings_REQUIRES="dconf-service"
 gstreamer1_0_plugins_gsettings_CONTENTS+=" usr/share/glib-2.0/ etc/postinstall/"
