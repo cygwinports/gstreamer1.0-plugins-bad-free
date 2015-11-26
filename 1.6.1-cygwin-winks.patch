@@ -1,0 +1,20 @@
+--- origsrc/gst-plugins-bad-1.6.1/configure.ac	2015-11-02 03:36:23.000000000 -0600
++++ src/gst-plugins-bad-1.6.1/configure.ac	2015-11-02 03:36:00.000000000 -0600
+@@ -1557,7 +1557,7 @@ AG_GST_CHECK_FEATURE(WINKS, [Winks plug-
+   save_LIBS="$LIBS"
+   CFLAGS="$CFLAGS $DIRECTX_CFLAGS"
+   LDFLAGS="$LDFLAGS $DIRECTX_LDFLAGS"
+-  LIBS="$LIBS -lole32 -luuid -lstrmiids"
++  LIBS="$LIBS -lole32 -Wl,-Bstatic,-luuid,-Bdynamic -lstrmiids"
+   AC_MSG_CHECKING(for Winks LDFLAGS)
+   AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+ #include <windows.h>
+@@ -1582,7 +1582,7 @@ int main () {
+ 
+   if test "x$HAVE_WINKS" = "xyes";  then
+     dnl this is much more than we want
+-    WINKS_LIBS="-ldxguid -lole32 -luuid -lstrmiids -lksuser -lsetupapi"
++    WINKS_LIBS="-ldxguid -lole32 -Wl,-Bstatic,-luuid,-Bdynamic -lstrmiids -lksuser -lsetupapi"
+     AC_SUBST(DIRECTX_CFLAGS)
+     AC_SUBST(DIRECTX_LDFLAGS)
+     AC_SUBST(WINKS_LIBS)

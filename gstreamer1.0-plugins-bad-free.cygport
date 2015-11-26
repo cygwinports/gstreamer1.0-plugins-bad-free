@@ -1,16 +1,16 @@
-GST_PLUGINS_ENABLE="assrender bz2 chromaprint curl resindvd fluidsynth gsm hls
-	kate ladspa modplug neon ofa openal opencv openexr opengl openjpeg opus
-	rsvg sndfile soundtouch schro webp wildmidi zbar direct3d directsound"
-GST_PLUGINS_DISABLE="apple_media avc direct3d9
-	directshow osx_video quicktime uvch264 vcd cdaudio dc1394 decklink
+GST_PLUGINS_ENABLE="assrender bs2b bz2 chromaprint curl resindvd dtls flite
+	fluidsynth gme gsm gtk hls kate ladspa modplug neon openal opencv
+	openexr opengl openjpeg opus qt rsvg sndfile soundtouch schro webp
+	wildmidi zbar acm direct3d directshow directsound wasapi winks winscreencap"
+GST_PLUGINS_DISABLE="apple_media avc bluez
+	osx_video quicktime uvch264 vcd cdaudio dc1394 decklink
 	directfb wayland dts faac faad fbdev libmms linsys mimic mpeg2enc
-	mpg123 mplex mythtv pvr teletextdec spc gme swfdec xvid dvb
-	wininet acm vdpau rtmp spandsp sndio voamrwbenc voaacenc winscreencap
-	wasapi winks srtp"
+	mpg123 mplex mythtv ofa pvr teletextdec spc swfdec xvid dvb
+	wininet vdpau rtmp spandsp sndio voamrwbenc voaacenc srtp x265"
 inherit gst-plugins
 
 NAME="gstreamer1.0-plugins-bad-free"
-VERSION=1.4.5
+VERSION=1.6.1
 RELEASE=1
 CATEGORY="Audio Video"
 SUMMARY="GStreamer 1.0 Bad plugins"
@@ -18,60 +18,65 @@ DESCRIPTION="GStreamer Bad Plug-ins is a set of plug-ins that aren't up to par
 compared to the rest. They might be close to being good quality, but they're
 missing something - be it a good code review, some documentation, a set of
 tests, a real live maintainer, or some actual wide use."
-md5sum=c21f0b22bd6c6d493efefe558403d1dd
+md5sum=d1f2cb1d8c5202dfc4e60fcd81d06acc
 SRC_URI="http://pkgs.fedoraproject.org/repo/pkgs/${NAME/.0/}/${ORIG_PN}-${VERSION}.tar.xz/${md5sum}/${ORIG_PN}-${VERSION}.tar.xz"
 SRC_DIR="gst-plugins-bad-${VERSION}"
 PATCH_URI="
-	1.4.4-opencv-compile.patch
+	1.6.1-gdi-rank.patch
+	1.6.1-opengl-ready.patch
+	1.6.1-cygwin-winks.patch
 "
 
-PKG_NAMES="${NAME} ${NAME%-free}-devel ${NAME%-free}-doc"
+PKG_NAMES="${NAME} ${NAME}-extras ${NAME%-free}-doc"
 
-# frei0r: is in gst/ (as <frei0r.h> is included in sources so) it has no
-#         external build deps, but it should really in ext/ due to runtime deps
-# rfbsrc: included librfb depends on libX11
-for ext in ${GST_PLUGINS_ENABLE} frei0r rfbsrc
+for ext in bz2 resindvd gsm hls ladspa opus rsvg sndfile soundtouch webp celt frei0r rfbsrc
 do
-	# sys/ plugins with no additional deps
-	case ${ext} in direct3d|directsound) continue ;; esac
-
-	PKG_NAMES+=" ${NAME%-bad-free}-${ext}"
-	declare gstreamer1_0_plugins_${ext}_SUMMARY="GStreamer 1.0 ${ext} plugin"
-	case ${ext} in
-		hls)
-			declare gstreamer1_0_plugins_${ext}_CONTENTS="${GST_PLUGINDIR#/}/cyggstfragmented.dll"
-			gstreamer1_0_plugins_bad_free_CONTENTS+=" --exclude=cyggstfragmented.dll"
-			;;
-		*)
-			declare gstreamer1_0_plugins_${ext}_CONTENTS="${GST_PLUGINDIR#/}/cyggst${ext}*.dll"
-			gstreamer1_0_plugins_bad_free_CONTENTS+=" --exclude=cyggst${ext}*.dll"
-			;;
-	esac
+	gstreamer1_0_plugins_bad_free_OBSOLETES+=" ${NAME%-bad-free}-${ext}"
+done
+for ext in assrender bs2b chromaprint curl flite fluidsynth gme kate neon \
+	   modplug openal opencv openexr openjpeg schro wildmidi zbar
+do
+	gstreamer1_0_plugins_bad_free_CONTENTS+=" --exclude=*${ext}*"
+	gstreamer1_0_plugins_bad_free_extras_OBSOLETES+=" ${NAME%-bad-free}-${ext}"
+	gstreamer1_0_plugins_bad_free_extras_CONTENTS+=" usr/lib/gstreamer-1.0/*${ext}*"
 done
 unset ext
 
-gstreamer1_0_plugins_fluidsynth_REQUIRES="soundfont-fluid-gs"
-gstreamer1_0_plugins_frei0r_REQUIRES="frei0r-plugins"
-gstreamer1_0_plugins_gsettings_REQUIRES="dconf-service"
-gstreamer1_0_plugins_gsettings_CONTENTS+=" usr/share/glib-2.0/ etc/postinstall/"
-gstreamer1_0_plugins_bad_free_CONTENTS+=" --exclude=glib-2.0 --exclude=gtk-doc --exclude=gir-1.0
-	--exclude=cyggstgl-1.0-0.dll
-	usr/bin/ usr/lib/girepository-1.0/ usr/lib/gstreamer-1.0/ usr/share/"
-gstreamer1_0_plugins_bad_devel_SUMMARY="${SUMMARY} (library development)"
-gstreamer1_0_plugins_bad_devel_CONTENTS="
-	--exclude=libgstgl-1.0.dll.a --exclude=gstreamer-gl-1.0.pc --exclude=gl
-	usr/include/ usr/lib/lib* usr/lib/pkgconfig/ usr/share/gir-1.0/"
+gstreamer1_0_plugins_bad_free_CONTENTS+="
+	--exclude=glib-2.0 --exclude=gtk-doc --exclude=gir-1.0 --exclude=include
+	--exclude=cyggstopengl.dll --exclude=cyggstgtksink.dll --exclude=cygqtsink.dll
+	usr/lib/gstreamer-1.0/ usr/share/
+"
+gstreamer1_0_plugins_bad_free_extras_REQUIRES="soundfont-fluid-gs"
+gstreamer1_0_plugins_bad_free_extras_CONTENTS+=" usr/share/gst-plugins-bad/1.0/opencv*"
 gstreamer1_0_plugins_bad_doc_CATEGORY="Doc"
 gstreamer1_0_plugins_bad_doc_CONTENTS="usr/share/gtk-doc/"
-gstreamer1_0_plugins_opus_OBSOLETES="gstreamer1.0-plugins-celt"
 
-PKG_NAMES+=" gstreamer1.0-plugins-opengl-devel"
-gstreamer1_0_plugins_opengl_CONTENTS+=" usr/bin/cyggstgl-1.0-0.dll"
-gstreamer1_0_plugins_opengl_devel_CONTENTS="
+PKG_NAMES+=" libgstbad1.0_0 libgstbad1.0-devel girepository-GstBad1.0"
+libgstbad1_0_0_SUMMARY=${SUMMARY/plugins/libraries}
+libgstbad1_0_0_CONTENTS="--exclude=cyggstgl-*.dll usr/bin/cyggst*-1.0-0.dll"
+libgstbad1_0_devel_SUMMARY=${libgstbad1_0_0_SUMMARY}
+libgstbad1_0_devel_OBSOLETES="gstreamer1.0-plugins-bad-devel"
+libgstbad1_0_devel_CONTENTS="
+	--exclude=libgstgl-1.0.dll.a --exclude=gstreamer-gl-1.0.pc --exclude=gl
+	usr/include/ usr/lib/lib* usr/lib/pkgconfig/"
+girepository_GstBad1_0_CONTENTS="--exclude=GstGL-* usr/*/gir*-1.0/Gst*-1.0.*"
+
+PKG_NAMES+=" libgstgl1.0_0 libgstgl1.0-devel girepository-GstGL1.0"
+libgstgl1_0_0_CONTENTS="usr/bin/cyggstgl-1.0-0.dll"
+libgstgl1_0_devel_OBSOLETES="gstreamer1.0-plugins-opengl-devel"
+libgstgl1_0_devel_CONTENTS="
 	usr/include/gstreamer-1.0/gst/gl/
+	usr/lib/gstreamer-1.0/include/gst/gl/
 	usr/lib/libgstgl-1.0.dll.a
 	usr/lib/pkgconfig/gstreamer-gl-1.0.pc
 "
+girepository_GstGL1_0_CONTENTS="usr/*/gir*-1.0/GstGL-1.0.*"
+
+PKG_NAMES+=" gstreamer1.0-plugins-opengl gstreamer1.0-plugins-gtk gstreamer1.0-plugins-qml"
+gstreamer1_0_plugins_opengl_CONTENTS="usr/lib/gstreamer-1.0/cyggstopengl.dll"
+gstreamer1_0_plugins_gtk_CONTENTS="usr/lib/gstreamer-1.0/cyggstgtksink.dll"
+gstreamer1_0_plugins_qml_CONTENTS="usr/lib/gstreamer-1.0/cygqtsink.dll"
 
 DIFF_EXCLUDES+=" *.gschema.xml"
 
@@ -83,10 +88,18 @@ src_compile() {
         gst_plugins_autoreconf
 
         cd ${B}
-	PATH="${B}/gst-libs/gst/base/.libs:${B}/gst-libs/gst/basecamerabinsrc/.libs:${B}/gst-libs/gst/codecparsers/.libs:${B}/gst-libs/gst/gl/.libs:${B}/gst-libs/gst/insertbin/.libs:${B}/gst-libs/gst/interfaces/.libs:${B}/gst-libs/gst/mpegts/.libs:${B}/gst-libs/gst/uridownloader/.libs:${B}/gst-libs/gst/video/.libs:$PATH"
+
+	for d in adaptivedemux base basecamerabinsrc codecparsers gl insertbin \
+		 interfaces mpegts uridownloader video
+	do
+		PATH="${B}/gst-libs/gst/$d/.libs:${PATH}"
+	done
+
         gst_plugins_compile \
 		--with-opengl-module-name=cygGL-1.dll \
-		--disable-cocoa --enable-glx --disable-wgl
+		--with-egl-module-name=cygEGL-1.dll \
+		--with-gles2-module-name=cygGLESv2-2.dll \
+		--disable-cocoa --enable-glx --enable-egl --enable-gles2 --disable-wgl
 }
 
 KEEP_LA_FILES="none"

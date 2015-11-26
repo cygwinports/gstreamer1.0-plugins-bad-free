@@ -1,0 +1,22 @@
+--- origsrc/gst-plugins-bad-1.6.1/sys/d3dvideosink/d3dvideosink.c	2015-10-22 03:04:08.000000000 -0500
++++ src/gst-plugins-bad-1.6.1/sys/d3dvideosink/d3dvideosink.c	2015-11-16 18:16:35.097050100 -0600
+@@ -613,7 +613,7 @@ plugin_init (GstPlugin * plugin)
+ {
+   /* PRIMARY: this is the best videosink to use on windows */
+   if (!gst_element_register (plugin, ELEMENT_NAME,
+-          GST_RANK_PRIMARY, GST_TYPE_D3DVIDEOSINK))
++          GST_RANK_MARGINAL + 1, GST_TYPE_D3DVIDEOSINK))
+     return FALSE;
+ 
+   return TRUE;
+--- origsrc/gst-plugins-bad-1.6.1/sys/dshowvideosink/dshowvideosink.cpp	2015-10-22 03:04:08.000000000 -0500
++++ src/gst-plugins-bad-1.6.1/sys/dshowvideosink/dshowvideosink.cpp	2015-11-24 16:46:15.288326200 -0600
+@@ -1885,7 +1885,7 @@ plugin_init (GstPlugin * plugin)
+ {
+   /* PRIMARY: this is the best videosink to use on windows */
+   if (!gst_element_register (plugin, "dshowvideosink",
+-          GST_RANK_SECONDARY, GST_TYPE_DSHOWVIDEOSINK))
++          GST_RANK_MARGINAL, GST_TYPE_DSHOWVIDEOSINK))
+     return FALSE;
+ 
+   return TRUE;
