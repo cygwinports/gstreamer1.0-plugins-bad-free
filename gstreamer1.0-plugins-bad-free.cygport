@@ -97,9 +97,7 @@ src_compile() {
 
         gst_plugins_compile \
 		--with-opengl-module-name=cygGL-1.dll \
-		--with-egl-module-name=cygEGL-1.dll \
-		--with-gles2-module-name=cygGLESv2-2.dll \
-		--disable-cocoa --enable-glx --enable-egl --enable-gles2 --disable-wgl
+		--enable-glx --disable-egl --disable-gles2 --disable-wgl
 }
 
 KEEP_LA_FILES="none"
