@@ -10,7 +10,7 @@ GST_PLUGINS_DISABLE="apple_media avc bluez
 inherit gst-plugins
 
 NAME="gstreamer1.0-plugins-bad-free"
-VERSION=1.6.1
+VERSION=1.6.3
 RELEASE=1
 CATEGORY="Audio Video"
 SUMMARY="GStreamer 1.0 Bad plugins"
@@ -18,13 +18,15 @@ DESCRIPTION="GStreamer Bad Plug-ins is a set of plug-ins that aren't up to par
 compared to the rest. They might be close to being good quality, but they're
 missing something - be it a good code review, some documentation, a set of
 tests, a real live maintainer, or some actual wide use."
-md5sum=d1f2cb1d8c5202dfc4e60fcd81d06acc
+md5sum=975c8caae092174b8fe887c9cdd9ad5e
 SRC_URI="http://pkgs.fedoraproject.org/repo/pkgs/${NAME/.0/}/${ORIG_PN}-${VERSION}.tar.xz/${md5sum}/${ORIG_PN}-${VERSION}.tar.xz"
 SRC_DIR="gst-plugins-bad-${VERSION}"
 PATCH_URI="
 	1.6.1-gdi-rank.patch
 	1.6.1-opengl-ready.patch
 	1.6.1-cygwin-winks.patch
+	1.6.3-acm-port-to-gst1.patch
+	1.6.3-acm-mingw64.patch
 "
 
 PKG_NAMES="${NAME} ${NAME}-extras ${NAME%-free}-doc"
