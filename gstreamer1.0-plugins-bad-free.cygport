@@ -31,7 +31,7 @@ PATCH_URI="
 
 PKG_NAMES="${NAME} ${NAME}-extras ${NAME%-free}-doc"
 
-for ext in bz2 resindvd gsm hls ladspa opus rsvg sndfile soundtouch webp celt frei0r rfbsrc
+for ext in bz2 resindvd gsm hls ladspa rsvg sndfile soundtouch webp celt frei0r rfbsrc
 do
 	gstreamer1_0_plugins_bad_free_OBSOLETES+=" ${NAME%-bad-free}-${ext}"
 done
