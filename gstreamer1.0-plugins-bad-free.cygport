@@ -6,7 +6,7 @@ GST_PLUGINS_ENABLE="assrender bs2b bz2 chromaprint curl resindvd dtls flite
 GST_PLUGINS_DISABLE="apple_media avc bluez
 	osx_video quicktime uvch264 vcd cdaudio dc1394 decklink
 	directfb wayland dts faac faad fbdev libmms linsys mimic mpeg2enc
-	mplex mythtv ofa pvr teletextdec spc swfdec xvid dvb
+	mplex mythtv ofa openh264 pvr teletextdec spc swfdec xvid dvb
 	wininet vdpau rtmp spandsp sndio voamrwbenc voaacenc srtp x265"
 inherit gst-plugins
 
