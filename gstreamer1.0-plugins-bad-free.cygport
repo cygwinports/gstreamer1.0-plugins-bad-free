@@ -12,7 +12,7 @@ inherit gst-plugins
 
 NAME="gstreamer1.0-plugins-bad-free"
 VERSION=1.10.4
-RELEASE=2
+RELEASE=3
 CATEGORY="Audio Video"
 SUMMARY="GStreamer 1.0 Bad plugins"
 DESCRIPTION="GStreamer Bad Plug-ins is a set of plug-ins that aren't up to par
@@ -27,6 +27,7 @@ PATCH_URI="
 	1.6.1-cygwin-winks.patch
 	1.6.3-acm-mingw64.patch
 	1.10.4-webrtc-ftm.patch
+	1.10.4-opencv32.patch
 "
 
 PKG_NAMES="${NAME} ${NAME}-extras ${NAME%-free}-doc"
