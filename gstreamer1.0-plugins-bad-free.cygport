@@ -1,18 +1,18 @@
-GST_PLUGINS_ENABLE="assrender bs2b bz2 chromaprint curl resindvd dtls flite
-	fluidsynth gme gsm gtk hls kate ladspa modplug neon openal opencv
-	openexr opengl openjpeg qt rsvg sndfile soundtouch schro webp
+GST_PLUGINS_ENABLE="assrender bs2b bz2 chromaprint curl resindvd dtls fdk_aac
+	flite fluidsynth gme gsm gtk hls kate ladspa modplug neon openal opencv
+	openexr opengl openjpeg qt rsvg sndfile soundtouch schro srtp webp
 	webrtcdsp wildmidi zbar acm direct3d directshow directsound wasapi
 	winks winscreencap"
 GST_PLUGINS_DISABLE="apple_media avc bluez
 	osx_video quicktime uvch264 vcd cdaudio dc1394 decklink
-	directfb wayland dts faac faad fbdev fdk_aac libmms linsys mimic
+	directfb wayland dts faac faad fbdev libmms linsys mimic
 	mpeg2enc mplex mythtv ofa openh264 pvr teletextdec spc swfdec xvid dvb
-	wininet vdpau rtmp spandsp sndio voamrwbenc voaacenc srtp x265"
+	wininet vdpau rtmp spandsp sndio voamrwbenc voaacenc x265"
 inherit gst-plugins
 
 NAME="gstreamer1.0-plugins-bad-free"
 VERSION=1.12.4
-RELEASE=1
+RELEASE=2
 CATEGORY="Audio Video"
 SUMMARY="GStreamer 1.0 Bad plugins"
 DESCRIPTION="GStreamer Bad Plug-ins is a set of plug-ins that aren't up to par
